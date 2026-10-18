@@ -24,6 +24,7 @@ ledger that keeps the agent honest.
 - Channel3 product-search API for live catalog results.
 - A bring-your-own-key LLM (Gemini or OpenRouter) for the shopping plan and
   pick rationale. Keys stay in your browser's localStorage.
+- AG Grid for the purchase ledger.
 - Static site, no build step. Hosted demo on GitHub Pages.
 
 ## Run it
