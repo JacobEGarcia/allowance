@@ -1,0 +1,77 @@
+:root {
+  --bg: #f7f4ee;
+  --ink: #23211d;
+  --muted: #6f6a5e;
+  --line: #ddd6c8;
+  --accent: #003087;
+  --card: #fffdf8;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+}
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+header { border-bottom: 1px solid var(--line); padding: 48px 0 28px; }
+h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 44px; font-weight: 400; margin: 0 0 6px; letter-spacing: -0.5px;
+}
+.tagline { color: var(--muted); margin: 0; font-size: 17px; }
+main { padding: 8px 0 60px; }
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 24px 26px;
+  margin-top: 22px;
+}
+h2 { font-family: Georgia, serif; font-weight: 400; font-size: 22px; margin: 0 0 6px; }
+.muted { color: var(--muted); font-size: 14px; margin: 4px 0 14px; }
+.field-row { margin-bottom: 12px; }
+.field-row.two { display: flex; gap: 14px; }
+.field-row.two label { flex: 1; }
+label { display: block; font-size: 13px; color: var(--muted); }
+input[type=text], input[type=number], input[type=password] {
+  width: 100%; margin-top: 4px; padding: 10px 12px;
+  border: 1px solid var(--line); border-radius: 6px;
+  background: #fff; color: var(--ink); font-size: 15px;
+}
+button {
+  padding: 10px 20px; border-radius: 6px; border: 1px solid var(--line);
+  background: #fff; color: var(--ink); font-size: 15px; cursor: pointer;
+}
+button.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+button:hover { opacity: 0.88; }
+.hidden { display: none; }
+.mandate-card {
+  margin-top: 16px; padding: 16px 18px;
+  border: 1px dashed var(--accent); border-radius: 8px;
+  background: #f4f7ff; font-size: 14px;
+}
+.mandate-card .cap { font-size: 26px; font-family: Georgia, serif; }
+.agent-log { margin: 14px 0 0; padding-left: 22px; font-size: 14px; }
+.agent-log li { margin-bottom: 6px; }
+.agent-log li .step-detail { color: var(--muted); font-size: 13px; }
+.demo-toggle { display: block; margin-top: 12px; font-size: 13px; color: var(--muted); }
+.approval-card {
+  margin-top: 16px; border: 1px solid var(--line); border-radius: 8px;
+  padding: 18px; background: #fff;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.approval-card img { width: 110px; height: 110px; object-fit: contain; border-radius: 6px; background: #fafafa; }
+.approval-card .info { flex: 1; }
+.approval-card h3 { margin: 0 0 4px; font-size: 17px; }
+.approval-card .price { font-family: Georgia, serif; font-size: 22px; margin: 6px 0; }
+.approval-card .rationale { font-size: 13px; color: var(--muted); font-style: italic; }
+.approval-card .actions { margin-top: 10px; display: flex; gap: 10px; }
+.paypal-summary { font-size: 15px; margin-bottom: 14px; }
+.ledger-list .entry {
+  border-top: 1px solid var(--line); padding: 10px 0; font-size: 14px;
+  display: flex; justify-content: space-between; gap: 10px;
+}
+.ledger-list .entry .oid { color: var(--muted); font-size: 12px; }
+footer { margin-top: 34px; color: var(--muted); font-size: 13px; }

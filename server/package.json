@@ -1,0 +1,8 @@
+{
+  "name": "allowance-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Optional PayPal Orders v2 REST backend for the Allowance demo",
+  "main": "server.js",
+  "engines": { "node": ">=18" }
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allowance - give your AI agent a budget, not your card</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Allowance</h1>
+    <p class="tagline">Give your AI agent a budget, not your card.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="mandate-section" class="panel">
+    <h2>1. Issue a spending mandate</h2>
+    <p class="muted">A mandate is the only authority the agent gets: a goal, a cap, and a window. It cannot spend a cent outside it.</p>
+    <div class="field-row">
+      <label>Goal
+        <input id="goal" type="text" placeholder="a warm desk lamp for late-night reading" value="a warm desk lamp for late-night reading">
+      </label>
+    </div>
+    <div class="field-row two">
+      <label>Budget cap (USD)
+        <input id="cap" type="number" min="1" step="1" value="50">
+      </label>
+      <label>Window (days)
+        <input id="window" type="number" min="1" step="1" value="7">
+      </label>
+    </div>
+    <button id="issue-mandate" class="primary">Issue mandate</button>
+    <div id="mandate-card" class="mandate-card hidden"></div>
+  </section>
+
+  <section id="agent-section" class="panel hidden">
+    <h2>2. Run the agent</h2>
+    <p class="muted">The agent plans searches, queries the live Channel3 catalog, and picks one option with its reasoning. It cannot buy anything yet.</p>
+    <button id="run-agent" class="primary">Run agent</button>
+    <label class="demo-toggle"><input type="checkbox" id="demo-mode"> Demo mode (canned catalog, no API keys needed)</label>
+    <ol id="agent-log" class="agent-log"></ol>
+    <div id="approval-card" class="approval-card hidden"></div>
+  </section>
+
+  <section id="checkout-section" class="panel hidden">
+    <h2>3. Pay with PayPal</h2>
+    <p class="muted">Sandbox checkout. The amount is locked to the approved pick - the agent cannot change it.</p>
+    <div id="paypal-summary" class="paypal-summary"></div>
+    <div id="paypal-button-container"></div>
+  </section>
+
+  <section id="ledger-section" class="panel">
+    <h2>Ledger</h2>
+    <p class="muted">Every approved purchase, with its PayPal order ID.</p>
+    <div id="ledger-list" class="ledger-list"><p class="muted" id="ledger-empty">No purchases yet.</p></div>
+  </section>
+
+  <section class="panel">
+    <h2>Settings</h2>
+    <p class="muted">Keys are stored only in this browser (localStorage). Never committed, never sent anywhere except the APIs they belong to.</p>
+    <div class="field-row"><label>Channel3 API key <input id="ch3-key" type="password" placeholder="free at trychannel3.com"></label></div>
+    <div class="field-row"><label>Gemini API key <input id="llm-key" type="password" placeholder="free at aistudio.google.com"></label></div>
+    <div class="field-row"><label>PayPal sandbox client ID <input id="pp-client" type="text" placeholder="from developer.paypal.com"></label></div>
+    <button id="save-settings">Save settings</button>
+  </section>
+
+  <footer>
+    <p>Built for the PayPal AI Hackathon. Agent: plans with an LLM, searches with Channel3, pays with PayPal - and never spends outside its mandate.</p>
+  </footer>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
