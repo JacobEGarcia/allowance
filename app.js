@@ -238,13 +238,28 @@ function recordPurchase(p, details) {
   logStep('Paid ' + money(p.price) + ' via PayPal. Order ' + entry.orderId + '. Ledger updated.', '');
 }
 
-/* ---------- ledger ---------- */
+/* ---------- ledger (AG Grid) ---------- */
+let ledgerGrid = null;
 function renderLedger() {
-  const list = $('ledger-list');
-  if (!state.ledger.length) { list.innerHTML = '<p class="muted">No purchases yet.</p>'; return; }
-  list.innerHTML = state.ledger.map(e =>
-    '<div class="entry"><span>' + escapeHtml(e.title) + '<div class="oid">PayPal ' + escapeHtml(e.orderId) + ' &middot; ' + new Date(e.at).toLocaleString() + '</div></span><span>' + money(e.amount) + '</span></div>'
-  ).join('');
+  const rows = state.ledger.map(e => ({
+    item: e.title, amount: e.amount, order: e.orderId,
+    mandate: e.mandateId, when: new Date(e.at).toLocaleString()
+  }));
+  $('ledger-empty').classList.toggle('hidden', rows.length > 0);
+  if (!ledgerGrid && window.agGrid) {
+    ledgerGrid = agGrid.createGrid($('ledger-grid'), {
+      columnDefs: [
+        { field: 'item', headerName: 'Item', flex: 3 },
+        { field: 'amount', headerName: 'Amount', flex: 1, valueFormatter: p => money(p.value) },
+        { field: 'order', headerName: 'PayPal order', flex: 2 },
+        { field: 'mandate', headerName: 'Mandate', flex: 1 },
+        { field: 'when', headerName: 'When', flex: 2 },
+      ],
+      rowData: [],
+      domLayout: 'normal',
+    });
+  }
+  if (ledgerGrid) ledgerGrid.setGridOption('rowData', rows);
 }
 
 function escapeHtml(s) {

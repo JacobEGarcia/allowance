@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Allowance - give your AI agent a budget, not your card</title>
 <link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@32.2.0/dist/ag-grid-community.min.js"></script>
 </head>
 <body>
 <header>
@@ -55,7 +56,8 @@
   <section id="ledger-section" class="panel">
     <h2>Ledger</h2>
     <p class="muted">Every approved purchase, with its PayPal order ID.</p>
-    <div id="ledger-list" class="ledger-list"><p class="muted" id="ledger-empty">No purchases yet.</p></div>
+    <div id="ledger-grid" class="ag-theme-quartz" style="height:220px"></div>
+    <p class="muted" id="ledger-empty">No purchases yet.</p>
   </section>
 
   <section class="panel">
