@@ -109,7 +109,7 @@ async function llmPick(goal, cap, products) {
   return JSON.parse(m[0]);
 }
 
-const DEFAULT_BACKEND = ''; // deployed server URL for the hosted demo (keys stay server-side)
+const DEFAULT_BACKEND = 'https://allowance-rust.vercel.app'; // deployed proxy - Channel3 key stays server-side
 async function channel3Search(query, limit) {
   const backend = (LS.get('backendUrl', DEFAULT_BACKEND) || '').replace(/\/+$/, '');
   let res;
@@ -163,9 +163,15 @@ $('run-agent').addEventListener('click', async () => {
       rationale = 'Best warmth-per-dollar: 2700K dimmable LED under the cap, strong reviews pattern for late-night reading.';
       logStep('Searched catalog: ' + products.length + ' in-budget candidates', '');
     } else {
-      logStep('Planning searches with the LLM...', 'goal + cap in, JSON plan out');
-      const plan = await llmPlan(m.goal, remaining);
-      logStep('Plan: ' + plan.queries.map(q => '"' + q + '"').join(', ') + ' - max ' + money(plan.max_price), '');
+      let plan;
+      if (LS.get('llmKey', '')) {
+        logStep('Planning searches with the LLM...', 'goal + cap in, JSON plan out');
+        plan = await llmPlan(m.goal, remaining);
+        logStep('Plan: ' + plan.queries.map(q => '"' + q + '"').join(', ') + ' - max ' + money(plan.max_price), '');
+      } else {
+        plan = { queries: [m.goal], max_price: remaining };
+        logStep('No LLM key set - searching for the goal directly (add a Gemini key in Settings for the full agent).', '');
+      }
       products = [];
       for (const q of plan.queries.slice(0, 3)) {
         const found = await channel3Search(q, 8);
@@ -175,10 +181,16 @@ $('run-agent').addEventListener('click', async () => {
       const seen = new Set();
       products = products.filter(p => { const k = p.title + p.price; if (seen.has(k)) return false; seen.add(k); return p.price <= remaining; });
       if (!products.length) { logStep('No in-budget products found. Mandate untouched.', ''); return; }
-      logStep('Ranking ' + products.length + ' candidates with the LLM...', '');
-      const ranked = await llmPick(m.goal, remaining, products.slice(0, 10));
-      pick = products[Math.min(Math.max((ranked.index || 1) - 1, 0), products.length - 1)];
-      rationale = ranked.rationale || '';
+      if (LS.get('llmKey', '')) {
+        logStep('Ranking ' + products.length + ' candidates with the LLM...', '');
+        const ranked = await llmPick(m.goal, remaining, products.slice(0, 10));
+        pick = products[Math.min(Math.max((ranked.index || 1) - 1, 0), products.length - 1)];
+        rationale = ranked.rationale || '';
+      } else {
+        const sorted = products.slice().sort((a, b) => a.price - b.price);
+        pick = sorted[Math.floor(sorted.length / 2)] || sorted[0];
+        rationale = 'Mid-price pick of the in-budget candidates (heuristic - no LLM key set).';
+      }
     }
     state.pick = pick;
     showApproval(pick, rationale);
