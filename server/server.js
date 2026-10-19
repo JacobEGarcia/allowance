@@ -64,6 +64,24 @@ const server = http.createServer(async (req, res) => {
     return sendJson(res, 200, { id: order.id });
   }
 
+  if (req.method === 'POST' && req.url === '/api/search') {
+    // Channel3 proxy - the key stays server-side (their API answers preflights
+    // with 403, so browsers cannot call it directly).
+    if (!process.env.CHANNEL3_API_KEY) return sendJson(res, 500, { error: 'CHANNEL3_API_KEY not set' });
+    const body = await readJson(req);
+    try {
+      const r = await fetch('https://api.trychannel3.com/v1/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.CHANNEL3_API_KEY },
+        body: JSON.stringify({ query: String(body.query || ''), limit: Math.min(Number(body.limit) || 8, 30), filters: { availability: ['InStock'] } }),
+      });
+      const data = await r.json();
+      return sendJson(res, r.status, data);
+    } catch (e) {
+      return sendJson(res, 502, { error: String(e) });
+    }
+  }
+
   const cap = req.url.match(/^\/api\/orders\/([\w-]+)\/capture$/);
   if (req.method === 'POST' && cap) {
     const result = await api('/v2/checkout/orders/' + cap[1] + '/capture', 'POST');

@@ -109,13 +109,24 @@ async function llmPick(goal, cap, products) {
   return JSON.parse(m[0]);
 }
 
+const DEFAULT_BACKEND = ''; // deployed server URL for the hosted demo (keys stay server-side)
 async function channel3Search(query, limit) {
-  const key = LS.get('ch3Key', '');
-  const res = await fetch('https://api.trychannel3.com/v1/search', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': key },
-    body: JSON.stringify({ query, limit, filters: { availability: ['InStock'] } })
-  });
+  const backend = (LS.get('backendUrl', DEFAULT_BACKEND) || '').replace(/\/+$/, '');
+  let res;
+  if (backend) {
+    res = await fetch(backend + '/api/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, limit })
+    });
+  } else {
+    const key = LS.get('ch3Key', '');
+    res = await fetch('https://api.trychannel3.com/v1/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': key },
+      body: JSON.stringify({ query, limit, filters: { availability: ['InStock'] } })
+    });
+  }
   if (!res.ok) throw new Error('Channel3 search failed (' + res.status + ')');
   const data = await res.json();
   return (data.products || []).map(p => {
@@ -127,7 +138,7 @@ async function channel3Search(query, limit) {
       currency: offer.price ? (offer.price.currency || 'USD') : 'USD',
       url: offer.url || '',
       domain: offer.domain || '',
-      image: (p.images && p.images[0]) || '',
+      image: (p.images && p.images[0] && (p.images[0].url || p.images[0])) || '',
     };
   }).filter(p => typeof p.price === 'number');
 }
